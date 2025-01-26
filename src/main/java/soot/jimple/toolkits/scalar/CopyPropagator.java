@@ -217,11 +217,27 @@ public class CopyPropagator extends BodyTransformer {
                 Local m = (Local) rightOp;
                 if (l != m) {
                   Integer defCount = localToDefCount.get(m);
-                  if (defCount == null || defCount == 0) {
-                    if (Options.v().verbose()) {
-                      logger.debug("[" + b.getMethod().getName() + "] Skipping undefined variable: " + m);
+                  if ((defCount == null || defCount == 0) && !m.getName().startsWith("$")) {
+                    // Build method code dump only for non-synthetic variables
+                    StringBuilder codeDump = new StringBuilder("\nMethod body:\n");
+                    int unitCount = 1;
+                    for (Unit unit : b.getUnits()) {
+                        codeDump.append(String.format("%4d: %s\n", unitCount++, unit));
                     }
-                    continue;
+                    
+                    throw new RuntimeException("Undefined variable " + m + " in method: "
+                        + b.getMethod().getSignature() + "\n"
+                        + "Class: " + b.getMethod().getDeclaringClass().getName() + "\n"
+                        + codeDump.toString());
+                  } else if (defCount == null || defCount == 0) {
+                    // Allow synthetic variables starting with $
+                    if (Options.v().verbose()) {
+                        logger.debug("Allowing synthetic variable: " + m);
+                    }
+                    // if (Options.v().verbose()) {
+                    //   logger.debug("[" + b.getMethod().getName() + "] Skipping undefined variable: " + m);
+                    // }
+                    // continue;
                   } else if (defCount == 1) {
                     useBox.setValue(m);
                     copyLineTags(useBox, def);
