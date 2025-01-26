@@ -201,7 +201,6 @@ public class InstructionFactory {
 
       case IGET:
       case IGET_OBJECT:
-      case IGET_OBJECT_VOLATILE:
       case IGET_BOOLEAN:
       case IGET_BYTE:
       case IGET_CHAR:
@@ -248,6 +247,7 @@ public class InstructionFactory {
         return new InvokeSpecialDirectInstruction(instruction, codeAddress);
       case INVOKE_SUPER:
       case INVOKE_SUPER_RANGE:
+      case INVOKE_SUPER_QUICK:  // Handle deprecated quick opcode
         return new InvokeSpecialSuperInstruction(instruction, codeAddress);
 
       case INVOKE_STATIC:
