@@ -44,15 +44,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction4rcc;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
 
-import soot.Local;
-import soot.Modifier;
-import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootFieldRef;
-import soot.SootMethodRef;
-import soot.SootResolver;
-import soot.Type;
+import soot.*;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -398,8 +390,10 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       return getUsedRegistersNums((Instruction45cc) instruction);
     } else if (instruction instanceof Instruction4rcc) {
       return getUsedRegistersNums((Instruction4rcc) instruction);
+    } else if (instruction instanceof org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) {
+      return getUsedRegistersNums((org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) instruction);
     }
-    throw new RuntimeException("Instruction is neither a InvokeInstruction nor a InvokeRangeInstruction");
+    throw new RuntimeException("Unhandled instruction type: " + instruction.getClass());
   }
 
   /**
@@ -443,6 +437,23 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * Executes the "jimplify" operation for a special invocation
    */
   protected void jimplifySpecial(DexBody body) {
+        if (!(instruction instanceof ReferenceInstruction)) {
+        StringBuilder errorMsg = new StringBuilder();
+        errorMsg.append("Unexpected instruction type in jimplifySpecial. Expected ReferenceInstruction, but got: ")
+                .append(instruction.getClass().getSimpleName()).append("\n");
+        errorMsg.append("Instruction details:\n");
+        errorMsg.append("  Opcode: ").append(instruction.getOpcode()).append("\n");
+        errorMsg.append("  Instruction string: ").append(instruction.toString()).append("\n");
+        errorMsg.append("Current class: ").append(this.getClass().getName()).append("\n");
+        errorMsg.append("DexBody information:\n");
+        errorMsg.append("  Defining class: ").append(body.getClass()).append("\n");
+        errorMsg.append("  Body units:\n");
+        for (Unit unit : body.getBody().getUnits()) {
+            errorMsg.append("    ").append(unit.toString()).append("\n");
+        }
+
+        throw new RuntimeException(errorMsg.toString());
+    }
     MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<Local> parameters = buildParameters(body, item.getParameterTypes(), false);
     invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getVirtualSootMethodRef(),
