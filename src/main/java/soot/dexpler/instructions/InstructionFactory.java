@@ -28,6 +28,7 @@ package soot.dexpler.instructions;
  */
 
 import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 /**
@@ -247,9 +248,13 @@ public class InstructionFactory {
         return new InvokeSpecialDirectInstruction(instruction, codeAddress);
       case INVOKE_SUPER:
       case INVOKE_SUPER_RANGE:
-      case INVOKE_SUPER_QUICK:  // Handle deprecated quick opcode
-        return new InvokeSpecialSuperInstruction(instruction, codeAddress);
-
+        return new InvokeSuperRangeInstruction(instruction, codeAddress);
+      case INVOKE_SUPER_QUICK:
+        if (instruction instanceof DexBackedInstruction) {
+          return new InvokeSuperQuickInstruction((DexBackedInstruction) instruction, codeAddress);
+        } else {
+          throw new IllegalArgumentException("Unsupported instruction type for INVOKE_SUPER_QUICK");
+        }
       case INVOKE_STATIC:
       case INVOKE_STATIC_RANGE:
         return new InvokeStaticInstruction(instruction, codeAddress);

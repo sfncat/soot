@@ -43,7 +43,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction45cc;
 import org.jf.dexlib2.iface.instruction.formats.Instruction4rcc;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
-
+import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms;
 import soot.*;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
@@ -437,7 +437,10 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
    * Executes the "jimplify" operation for a special invocation
    */
   protected void jimplifySpecial(DexBody body) {
-        if (!(instruction instanceof ReferenceInstruction)) {
+    MethodReference item = null;
+    if (instruction instanceof ReferenceInstruction) {
+        item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+    }else {
         StringBuilder errorMsg = new StringBuilder();
         errorMsg.append("Unexpected instruction type in jimplifySpecial. Expected ReferenceInstruction, but got: ")
                 .append(instruction.getClass().getSimpleName()).append("\n");
@@ -454,7 +457,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 
         throw new RuntimeException(errorMsg.toString());
     }
-    MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
+    //MethodReference item = (MethodReference) ((ReferenceInstruction) instruction).getReference();
     List<Local> parameters = buildParameters(body, item.getParameterTypes(), false);
     invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0), getVirtualSootMethodRef(),
         parameters.subList(1, parameters.size()));
