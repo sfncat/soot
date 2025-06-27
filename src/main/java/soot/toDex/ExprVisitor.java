@@ -25,9 +25,9 @@ package soot.toDex;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.DoubleType;

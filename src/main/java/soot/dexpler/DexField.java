@@ -27,17 +27,17 @@ package soot.dexpler;
  * #L%
  */
 
-import org.jf.dexlib2.iface.Field;
-import org.jf.dexlib2.iface.value.BooleanEncodedValue;
-import org.jf.dexlib2.iface.value.ByteEncodedValue;
-import org.jf.dexlib2.iface.value.CharEncodedValue;
-import org.jf.dexlib2.iface.value.DoubleEncodedValue;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.iface.value.FloatEncodedValue;
-import org.jf.dexlib2.iface.value.IntEncodedValue;
-import org.jf.dexlib2.iface.value.LongEncodedValue;
-import org.jf.dexlib2.iface.value.ShortEncodedValue;
-import org.jf.dexlib2.iface.value.StringEncodedValue;
+import com.android.tools.smali.dexlib2.iface.Field;
+import com.android.tools.smali.dexlib2.iface.value.BooleanEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.ByteEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.CharEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.DoubleEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.EncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.FloatEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.IntEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.LongEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.ShortEncodedValue;
+import com.android.tools.smali.dexlib2.iface.value.StringEncodedValue;
 
 import soot.Scene;
 import soot.SootField;

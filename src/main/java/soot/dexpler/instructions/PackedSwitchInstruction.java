@@ -30,9 +30,9 @@ package soot.dexpler.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.SwitchElement;
-import org.jf.dexlib2.iface.instruction.formats.PackedSwitchPayload;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.SwitchElement;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.PackedSwitchPayload;
 
 import soot.IntType;
 import soot.Local;

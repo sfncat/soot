@@ -29,9 +29,9 @@ package soot.dexpler.instructions;
 
 import java.util.List;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
-import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.ArrayPayload;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction31t;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

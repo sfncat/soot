@@ -33,12 +33,12 @@ import static soot.dexpler.Util.isFloatLike;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
-import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
-import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
-import org.jf.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction21c;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction22c;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction23x;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Scene;

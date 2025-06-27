@@ -27,8 +27,8 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction11x;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction11x;
 
 import soot.Local;
 import soot.dexpler.DexBody;

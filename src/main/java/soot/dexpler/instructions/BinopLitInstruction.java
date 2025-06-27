@@ -27,12 +27,12 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
-import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction22b;
-import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.NarrowLiteralInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction22b;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction22s;
 
 import soot.Local;
 import soot.Value;

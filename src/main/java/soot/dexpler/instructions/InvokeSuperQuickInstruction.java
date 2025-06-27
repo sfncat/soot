@@ -27,8 +27,9 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction;
-import org.jf.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.dexbacked.instruction.DexBackedInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import soot.dexpler.DexBody;
 
 public class InvokeSuperQuickInstruction extends InvokeSpecialSuperInstruction {
 

@@ -22,11 +22,11 @@ package soot.toDex;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.iface.reference.StringReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
-import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.iface.reference.StringReference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableStringReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableTypeReference;
 
 import soot.jimple.AbstractConstantSwitch;
 import soot.jimple.ClassConstant;

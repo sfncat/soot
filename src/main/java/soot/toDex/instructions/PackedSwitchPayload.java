@@ -25,9 +25,9 @@ package soot.toDex.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.Label;
-import org.jf.dexlib2.builder.instruction.BuilderPackedSwitchPayload;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.Label;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderPackedSwitchPayload;
 
 import soot.Unit;
 import soot.jimple.Stmt;

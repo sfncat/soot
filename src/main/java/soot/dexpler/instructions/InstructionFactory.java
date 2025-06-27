@@ -27,9 +27,9 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction;
-import org.jf.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.dexbacked.instruction.DexBackedInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 
 /**
  * Factory that returns an appropriate Instruction instances for given dexlib instructions and opcodes.

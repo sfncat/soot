@@ -24,8 +24,8 @@ package soot.toDex.instructions;
 
 import java.util.List;
 
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.instruction.BuilderArrayPayload;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderArrayPayload;
 
 import soot.toDex.LabelAssigner;
 

@@ -22,7 +22,7 @@ package soot.toDex.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.Opcode;
 
 import soot.jimple.Stmt;
 

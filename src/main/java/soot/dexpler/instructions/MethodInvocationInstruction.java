@@ -35,15 +35,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
-import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
-import org.jf.dexlib2.iface.instruction.formats.Instruction45cc;
-import org.jf.dexlib2.iface.instruction.formats.Instruction4rcc;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction35c;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction3rc;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction45cc;
+import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction4rcc;
+import com.android.tools.smali.dexlib2.iface.reference.FieldReference;
+import com.android.tools.smali.dexlib2.iface.reference.MethodReference;
+import com.android.tools.smali.dexlib2.dexbacked.instruction.DexBackedInstruction35ms;
 import soot.*;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
@@ -390,8 +390,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
       return getUsedRegistersNums((Instruction45cc) instruction);
     } else if (instruction instanceof Instruction4rcc) {
       return getUsedRegistersNums((Instruction4rcc) instruction);
-    } else if (instruction instanceof org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) {
-      return getUsedRegistersNums((org.jf.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) instruction);
+    } else if (instruction instanceof com.android.tools.smali.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) {
+      return getUsedRegistersNums((com.android.tools.smali.dexlib2.dexbacked.instruction.DexBackedInstruction35ms) instruction);
     }
     throw new RuntimeException("Unhandled instruction type: " + instruction.getClass());
   }

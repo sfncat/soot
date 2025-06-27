@@ -30,9 +30,9 @@ package soot.dexpler.instructions;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jf.dexlib2.iface.instruction.DualReferenceInstruction;
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.reference.MethodProtoReference;
+import com.android.tools.smali.dexlib2.iface.instruction.DualReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.reference.MethodProtoReference;
 
 import soot.ArrayType;
 import soot.Body;

@@ -24,10 +24,10 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.builder.BuilderInstruction;
-import org.jf.dexlib2.builder.instruction.BuilderInstruction35c;
-import org.jf.dexlib2.iface.reference.Reference;
+import com.android.tools.smali.dexlib2.Opcode;
+import com.android.tools.smali.dexlib2.builder.BuilderInstruction;
+import com.android.tools.smali.dexlib2.builder.instruction.BuilderInstruction35c;
+import com.android.tools.smali.dexlib2.iface.reference.Reference;
 
 import soot.toDex.LabelAssigner;
 import soot.toDex.Register;

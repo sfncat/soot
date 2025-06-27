@@ -42,7 +42,7 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 
 import soot.tagkit.Tag;
 

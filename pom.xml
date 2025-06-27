@@ -447,10 +447,17 @@
             <artifactId>commons-io</artifactId>
             <version>2.17.0</version>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>org.smali</groupId>-->
+<!--            <artifactId>dexlib2</artifactId>-->
+<!--            <version>2.5.2</version>-->
+<!--        </dependency>-->
+<!--        mvn install:install-file -Dfile=dexlib2-3.0.9-dev.jar -DgroupId=com.android.tools.smali -DartifactId=smali-dexlib2 -Dversion=3.0.9 -Dpackaging=jar-->
         <dependency>
-            <groupId>org.smali</groupId>
-            <artifactId>dexlib2</artifactId>
-            <version>2.5.2</version>
+            <groupId>com.android.tools.smali</groupId>
+            <artifactId>smali-dexlib2</artifactId>
+            <version>3.0.9</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -594,6 +601,16 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <id>google</id>
+            <url>https://maven.google.com/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
         <repository>
             <id>sonatype-snapshot</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>

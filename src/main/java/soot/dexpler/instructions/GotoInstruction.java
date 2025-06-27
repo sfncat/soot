@@ -27,7 +27,7 @@ package soot.dexpler.instructions;
  * #L%
  */
 
-import org.jf.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
 import soot.jimple.GotoStmt;

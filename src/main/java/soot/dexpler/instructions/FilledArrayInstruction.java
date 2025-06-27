@@ -30,9 +30,9 @@ package soot.dexpler.instructions;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.jf.dexlib2.iface.instruction.Instruction;
-import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
-import org.jf.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
+import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
 
 import soot.Type;
 import soot.dexpler.DexBody;

@@ -27,8 +27,8 @@ package soot.dexpler;
  * #L%
  */
 
-import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
+import com.android.tools.smali.dexlib2.iface.reference.TypeReference;
+import com.android.tools.smali.dexlib2.immutable.reference.ImmutableTypeReference;
 
 import soot.BooleanType;
 import soot.ByteType;
