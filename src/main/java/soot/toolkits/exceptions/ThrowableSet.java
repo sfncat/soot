@@ -90,7 +90,12 @@ import soot.options.Options;
 public class ThrowableSet {
 
   private static final boolean INSTRUMENTING = false;
-  private final SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
+  
+  	/**
+	 * A reference to java.lang.Object. Not final to allow subclasses to use a
+	 * different class here, e.g., when analyzing .net programs.
+	 */
+  protected SootClass JAVA_LANG_OBJECT_CLASS = Scene.v().getObjectType().getSootClass();
 
   /**
    * Set of exception types included within the set.
@@ -1013,28 +1018,28 @@ public class ThrowableSet {
     /**
      * <code>ThrowableSet</code> representing all possible Throwables.
      */
-    final ThrowableSet ALL_THROWABLES;
+    public final ThrowableSet ALL_THROWABLES;
     /**
      * <code>ThrowableSet</code> containing all the asynchronous and virtual machine errors, which may be thrown by any
      * bytecode instruction at any point in the computation.
      */
-    final ThrowableSet VM_ERRORS;
+    public final ThrowableSet VM_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
      * field.
      */
-    final ThrowableSet RESOLVE_FIELD_ERRORS;
+    public final ThrowableSet RESOLVE_FIELD_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions that may be thrown in the course of resolving a reference to a
      * non-static method.
      */
-    final ThrowableSet RESOLVE_METHOD_ERRORS;
+    public final ThrowableSet RESOLVE_METHOD_ERRORS;
     /**
      * <code>ThrowableSet</code> containing all the exceptions which may be thrown by instructions that have the potential to
      * cause a new class to be loaded and initialized (including UnsatisfiedLinkError, which is raised at runtime rather than
      * linking type).
      */
-    final ThrowableSet INITIALIZATION_ERRORS;
+    public final ThrowableSet INITIALIZATION_ERRORS;
     /**
      * This map stores all referenced <code>ThrowableSet</code>s.
      */
