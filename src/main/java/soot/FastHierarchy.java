@@ -881,7 +881,7 @@ public class FastHierarchy {
    *          The subsignature (can be null) to speed up the resolving process.
    * @return The concrete method o.f() to call
    */
-  private SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
+  protected SootMethod resolveMethod(final SootClass baseType, final SootClass declaringClass, final String name,
       final List<Type> parameterTypes, final Type returnType, final boolean allowAbstract, final Set<SootClass> ignoreList,
       NumberedString subsignature) {
     final NumberedString methodSignature;
@@ -1017,8 +1017,10 @@ public class FastHierarchy {
     SootMethod candidate = null;
     for (SootMethod method : concreteType.getMethodsByNameAndParamCount(name, parameterTypes.size())) {
       if (method.getParameterTypes().equals(parameterTypes) && canStoreType(method.getReturnType(), returnType)) {
-        candidate = method;
-        returnType = method.getReturnType();
+        if (candidate == null || returnType.equals(method.getReturnType())) {
+          candidate = method;
+          returnType = method.getReturnType();
+        }
       }
       // if dotnet structs or generics
       if (isDotNet) {

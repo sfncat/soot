@@ -40,3 +40,9 @@ replace all 'org.jf.dexlib2' to 'com.android.tools.smali.dexlib2'
 ## compile soot
 
 mvn clean compile assembly:single
+
+## install soot
+```bazaar
+mvn install:install-file -Dfile=target/sootclasses-trunk-jar-with-dependencies.jar -DgroupId=soot -DartifactId=soot -Dversion=4.6.0 -Dpackaging=jar
+```
+
