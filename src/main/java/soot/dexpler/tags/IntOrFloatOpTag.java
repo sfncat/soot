@@ -26,15 +26,17 @@ import soot.tagkit.Tag;
 
 public class IntOrFloatOpTag implements Tag, DexplerTag {
 
+  public static final IntOrFloatOpTag INSTANCE = new IntOrFloatOpTag();
+
   public static final String NAME = "IntOrFloatOpTag";
+
+  @Deprecated
+  public IntOrFloatOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
   }
 }

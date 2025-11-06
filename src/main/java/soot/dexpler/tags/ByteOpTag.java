@@ -28,16 +28,18 @@ import soot.tagkit.Tag;
 
 public class ByteOpTag implements Tag, DexplerTag {
 
+  public static final ByteOpTag INSTANCE = new ByteOpTag();
+
   public static final String NAME = "ByteOpTag";
+
+  @Deprecated
+  public ByteOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
   }
 
   @Override

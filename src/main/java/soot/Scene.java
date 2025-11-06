@@ -56,11 +56,11 @@ import org.slf4j.LoggerFactory;
 import pxb.android.axml.AxmlReader;
 import pxb.android.axml.AxmlVisitor;
 import pxb.android.axml.NodeVisitor;
+
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.dotnet.exceptiontoolkits.DotnetThrowAnalysis;
 import soot.dotnet.members.DotnetMethod;
 import soot.dotnet.types.DotNetBasicTypes;
-import soot.javaToJimple.DefaultLocalGenerator;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.toolkits.callgraph.CallGraph;
@@ -803,8 +803,7 @@ public class Scene {
       }
     }
 
-    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple()
-        || Options.v().output_format() == Options.output_format_dava)) {
+    if (!javaGEQ9 && (Options.v().whole_program() || Options.v().whole_shimple())) {
       // add jce.jar, which is necessary for whole program mode
       // (java.security.Signature from rt.jar imports javax.crypto.Cipher from jce.jar)
       sb.append(File.pathSeparatorChar).append(javaHome).append(File.separatorChar).append("lib").append(File.separatorChar)
@@ -1383,7 +1382,7 @@ public class Scene {
   }
 
   /** Retrieves the active fast hierarchy */
-  public synchronized FastHierarchy getFastHierarchy() {
+  public FastHierarchy getFastHierarchy() {
     FastHierarchy temp = this.activeFastHierarchy;
     if (temp == null) {
       throw new RuntimeException("no active FastHierarchy present for scene");
@@ -1392,15 +1391,15 @@ public class Scene {
   }
 
   /** Sets the active hierarchy */
-  public synchronized void setFastHierarchy(FastHierarchy hierarchy) {
+  public void setFastHierarchy(FastHierarchy hierarchy) {
     activeFastHierarchy = hierarchy;
   }
 
-  public synchronized boolean hasFastHierarchy() {
+  public boolean hasFastHierarchy() {
     return activeFastHierarchy != null;
   }
 
-  public synchronized void releaseFastHierarchy() {
+  public void releaseFastHierarchy() {
     activeFastHierarchy = null;
   }
 
@@ -1416,15 +1415,15 @@ public class Scene {
   }
 
   /** Sets the active hierarchy */
-  public synchronized void setActiveHierarchy(Hierarchy hierarchy) {
+  public void setActiveHierarchy(Hierarchy hierarchy) {
     activeHierarchy = hierarchy;
   }
 
-  public synchronized boolean hasActiveHierarchy() {
+  public boolean hasActiveHierarchy() {
     return activeHierarchy != null;
   }
 
-  public synchronized void releaseActiveHierarchy() {
+  public void releaseActiveHierarchy() {
     activeHierarchy = null;
   }
 

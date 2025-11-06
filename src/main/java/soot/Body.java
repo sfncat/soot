@@ -1,5 +1,7 @@
 package soot;
 
+import com.google.common.collect.Iterators;
+
 /*-
  * #%L
  * Soot - a J*va Optimization Framework
@@ -29,6 +31,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,8 +43,6 @@ import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
-import soot.tagkit.CodeAttribute;
-import soot.tagkit.Tag;
 import soot.util.Chain;
 import soot.util.EscapedWriter;
 import soot.util.HashChain;
@@ -481,11 +482,6 @@ public abstract class Body extends AbstractHost implements Serializable {
     for (Trap item : trapChain) {
       unitBoxList.addAll(item.getUnitBoxes());
     }
-    for (Tag t : getTags()) {
-      if (t instanceof CodeAttribute) {
-        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-      }
-    }
 
     return unitBoxList;
   }
@@ -517,11 +513,6 @@ public abstract class Body extends AbstractHost implements Serializable {
     }
     for (Trap item : trapChain) {
       unitBoxList.addAll(item.getUnitBoxes());
-    }
-    for (Tag t : getTags()) {
-      if (t instanceof CodeAttribute) {
-        unitBoxList.addAll(((CodeAttribute) t).getUnitBoxes());
-      }
     }
 
     return unitBoxList;
@@ -582,6 +573,68 @@ public abstract class Body extends AbstractHost implements Serializable {
       useAndDefBoxList.addAll(item.getDefBoxes());
     }
     return useAndDefBoxList;
+  }
+
+  /**
+   * Returns the result of iterating through all Units in this body and querying them for ValueBoxes used. All of the
+   * ValueBoxes found are then returned as an Iterator.
+   *
+   * @return an iterator of all the ValueBoxes for the Values used this body's units.
+   *
+   * @see Value
+   * @see Unit#getUseBoxes
+   * @see ValueBox
+   * @see Value
+   */
+  public Iterator<ValueBox> getUseBoxesIterator() {
+    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    int i = 0;
+    for (Unit item : unitChain) {
+      vb[i] = item.getUseBoxesIterator();
+      i++;
+    }
+    return Iterators.concat(vb);
+  }
+
+  /**
+   * Returns the result of iterating through all Units in this body and querying them for ValueBoxes defined. All of the
+   * ValueBoxes found are then returned as an Iterator.
+   *
+   * @return an iterator of all the ValueBoxes for Values defined by this body's units.
+   *
+   * @see Value
+   * @see Unit#getDefBoxes
+   * @see ValueBox
+   * @see Value
+   */
+  public Iterator<ValueBox> getDefBoxesIterator() {
+    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    int i = 0;
+    for (Unit item : unitChain) {
+      vb[i] = item.getDefBoxesIterator();
+      i++;
+    }
+    return Iterators.concat(vb);
+  }
+
+  /**
+   * Returns an iterator of boxes corresponding to Values either used or defined in any unit of this Body.
+   *
+   * @return an iterator of ValueBoxes for held by the body's Units.
+   *
+   * @see Value
+   * @see Unit#getUseAndDefBoxes
+   * @see ValueBox
+   * @see Value
+   */
+  public Iterator<ValueBox> getUseAndDefBoxesIterator() {
+    Iterator<ValueBox>[] vb = (Iterator<ValueBox>[]) new Iterator[unitChain.size()];
+    int i = 0;
+    for (Unit item : unitChain) {
+      vb[i] = item.getUseAndDefBoxesIterator();
+      i++;
+    }
+    return Iterators.concat(vb);
   }
 
   /**

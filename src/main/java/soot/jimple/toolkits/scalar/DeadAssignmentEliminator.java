@@ -244,7 +244,8 @@ public class DeadAssignmentEliminator extends BodyTransformer {
         while (!q.isEmpty()) {
           Unit s = q.removeFirst();
           if (essential.add(s)) {
-            for (ValueBox box : s.getUseBoxes()) {
+            for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+              ValueBox box = iterator.next();
               Value v = box.getValue();
               if (v instanceof Local) {
                 Local l = (Local) v;
@@ -293,8 +294,9 @@ public class DeadAssignmentEliminator extends BodyTransformer {
           units.swapWith(s, newInvoke);
 
           // If we have a callgraph, we need to fix it
-          if (Scene.v().hasCallGraph()) {
-            Scene.v().getCallGraph().swapEdgesOutOf(s, newInvoke);
+          Scene scene = Scene.v();
+          if (scene.hasCallGraph()) {
+            scene.getCallGraph().swapEdgesOutOf(s, newInvoke);
           }
         }
       }

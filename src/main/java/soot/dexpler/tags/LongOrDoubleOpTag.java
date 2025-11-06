@@ -26,15 +26,18 @@ import soot.tagkit.Tag;
 
 public class LongOrDoubleOpTag implements Tag, DexplerTag {
 
+  public static final LongOrDoubleOpTag INSTANCE = new LongOrDoubleOpTag();
+
   public static final String NAME = "LongOrDoubleOpTag";
+
+  @Deprecated
+  public LongOrDoubleOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
-  }
 }

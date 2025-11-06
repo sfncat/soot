@@ -31,10 +31,8 @@ import com.android.tools.smali.dexlib2.iface.instruction.Instruction;
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction;
 import com.android.tools.smali.dexlib2.iface.instruction.formats.Instruction23x;
 
-import soot.IntType;
 import soot.Local;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.InvalidDalvikBytecodeException;
 import soot.dexpler.tags.BooleanOpTag;
 import soot.dexpler.tags.ByteOpTag;
@@ -43,7 +41,6 @@ import soot.dexpler.tags.IntOrFloatOpTag;
 import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ObjectOpTag;
 import soot.dexpler.tags.ShortOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -72,36 +69,31 @@ public class AgetInstruction extends DexlibAbstractInstruction {
     AssignStmt assign = Jimple.v().newAssignStmt(l, arrayRef);
     switch (aGetInstr.getOpcode()) {
       case AGET_OBJECT:
-        assign.addTag(new ObjectOpTag());
+        assign.addTag(ObjectOpTag.INSTANCE);
         break;
       case AGET:
-        assign.addTag(new IntOrFloatOpTag());
+        assign.addTag(IntOrFloatOpTag.INSTANCE);
         break;
       case AGET_WIDE:
-        assign.addTag(new LongOrDoubleOpTag());
+        assign.addTag(LongOrDoubleOpTag.INSTANCE);
         break;
       case AGET_BYTE:
-        assign.addTag(new ByteOpTag());
+        assign.addTag(ByteOpTag.INSTANCE);
         break;
       case AGET_CHAR:
-        assign.addTag(new CharOpTag());
+        assign.addTag(CharOpTag.INSTANCE);
         break;
       case AGET_SHORT:
-        assign.addTag(new ShortOpTag());
+        assign.addTag(ShortOpTag.INSTANCE);
         break;
       case AGET_BOOLEAN:
-        assign.addTag(new BooleanOpTag());
+        assign.addTag(BooleanOpTag.INSTANCE);
         break;
     }
 
     setUnit(assign);
     addTags(assign);
     body.add(assign);
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
-      DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
-    }
   }
 
   @Override

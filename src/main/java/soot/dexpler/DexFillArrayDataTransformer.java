@@ -167,6 +167,5 @@ public class DexFillArrayDataTransformer extends BodyTransformer {
         arrayTypes.add(((ArrayType) pRef.getType()).getArrayElementType());
       }
     }
-
   }
 }

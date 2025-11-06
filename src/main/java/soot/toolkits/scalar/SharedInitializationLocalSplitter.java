@@ -119,7 +119,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
 
   @Override
   protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
-    if (Options.v().verbose()) {
+    final Options o = Options.v();
+    if (o.verbose()) {
       logger.debug("[" + body.getMethod().getName() + "] Splitting for shared initialization of locals...");
     }
 
@@ -128,29 +129,32 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     }
 
     if (!omitExceptingUnitEdges) {
-      omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+      omitExceptingUnitEdges = o.omit_excepting_unit_edges();
     }
 
-    DexNullThrowTransformer.v().transform(body);
-    CopyPropagator.v().transform(body);
-    DexNullThrowTransformer.v().transform(body);
+    DexNullThrowTransformer dexNull = DexNullThrowTransformer.v();
+    dexNull.transform(body);
+    CopyPropagator cp = CopyPropagator.v();
+    cp.transform(body);
+    dexNull.transform(body);
     ConstantPropagatorAndFolder.v().transform(body);
 
-    DexNullArrayRefTransformer.v().transform(body);
+    DexNullArrayRefTransformer dexNullArrayRef = DexNullArrayRefTransformer.v();
+    dexNullArrayRef.transform(body);
     FlowSensitiveConstantPropagator.v().transform(body);
-    CopyPropagator.v().transform(body);
+    cp.transform(body);
 
-    DexNullThrowTransformer.v().transform(body);
-    DexNullArrayRefTransformer.v().transform(body);
+    dexNull.transform(body);
+    dexNullArrayRef.transform(body);
 
     DeadAssignmentEliminator.v().transform(body);
-    CopyPropagator.v().transform(body);
+    cp.transform(body);
     transformOnly(body);
   }
 
   /**
-   * Sets a value on whether to act as a normal local splitter, making 
-   * soot.toolkits.scalar.LocalSplitter redundant.
+   * Sets a value on whether to act as a normal local splitter, making soot.toolkits.scalar.LocalSplitter redundant.
+   * 
    * @param actAsLocalSplitter
    * @return this
    */
@@ -178,7 +182,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
     }
 
     for (Unit s : units) {
-      nextUse: for (ValueBox useBox : s.getUseBoxes()) {
+      nextUse: for (Iterator<ValueBox> iterator = s.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox useBox = iterator.next();
         Value v = useBox.getValue();
         if (v instanceof Local) {
           Local luse = (Local) v;
@@ -212,16 +217,16 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
                 continue;
               }
 
-              //the idea is: When there is an overlap in any non-constant definition units,
-              //we need to merge them, since two different usages have overlapping definitions, 
-              //i.e. we can only change all these uses 
+              // the idea is: When there is an overlap in any non-constant definition units,
+              // we need to merge them, since two different usages have overlapping definitions,
+              // i.e. we can only change all these uses
               if (existing.nonConstantDefs.intersects(nonConstantDefs)) {
-                //we have an overlap
+                // we have an overlap
                 useset.or(existing.uses);
                 constantDefs.or(existing.constantInitializers);
                 nonConstantDefs.or(existing.nonConstantDefs);
 
-                //we only keep the new definition with an overlap
+                // we only keep the new definition with an overlap
                 it.remove();
               }
             }
@@ -255,7 +260,7 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
           }
           AssignStmt newAssign = Jimple.v().newAssignStmt(newLocal, assign.getRightOp());
           units.insertAfter(newAssign, assign);
-          CopyPropagator.copyLineTags(newAssign.getUseBoxes().get(0), assign);
+          CopyPropagator.copyLineTags(newAssign.getUseBoxesIterator().next(), assign);
         }
 
         BitSet uses = cluster.uses;
@@ -284,7 +289,8 @@ public class SharedInitializationLocalSplitter extends BodyTransformer {
   }
 
   private void replaceLocalsInUnitUses(Unit change, Value oldLocal, Local newLocal) {
-    for (ValueBox u : change.getUseBoxes()) {
+    for (Iterator<ValueBox> iterator = change.getUseBoxesIterator(); iterator.hasNext();) {
+      ValueBox u = iterator.next();
       if (u.getValue() == oldLocal) {
         u.setValue(newLocal);
       }

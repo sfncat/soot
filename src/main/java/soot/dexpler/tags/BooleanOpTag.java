@@ -28,16 +28,18 @@ import soot.tagkit.Tag;
 
 public class BooleanOpTag implements Tag, DexplerTag {
 
+  public static final BooleanOpTag INSTANCE = new BooleanOpTag();
+
   public static final String NAME = "BooleanOpTag";
+
+  @Deprecated
+  public BooleanOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
-  }
-
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
   }
 
   @Override

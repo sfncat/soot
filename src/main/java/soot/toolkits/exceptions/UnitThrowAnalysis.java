@@ -131,6 +131,8 @@ import soot.baf.ThrowInst;
 import soot.baf.UshrInst;
 import soot.baf.VirtualInvokeInst;
 import soot.baf.XorInst;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
 import soot.grimp.GrimpValueSwitch;
 import soot.grimp.NewInvokeExpr;
 import soot.jimple.AddExpr;
@@ -823,7 +825,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
         result = result.add(mgr.ARRAY_STORE_EXCEPTION);
       }
       result = result.add(mightThrow(s.getLeftOp()));
-      result = result.add(mightThrow(s.getRightOp()));
+
+      Value rightOp = s.getRightOp();
+      if (rightOp instanceof DivExpr && (s.hasTag(FloatOpTag.NAME) || s.hasTag(DoubleOpTag.NAME))) {
+        // workaround for https://github.com/soot-oss/soot/issues/2188
+        // skip right op processing - float and double divisions don't throw any exceptions but when
+        // building the Jimple body the value types are not yet known so we can not know from the expression
+        // if it is an int or float/double division
+      } else {
+        result = result.add(mightThrow(rightOp));
+      }
     }
 
     @Override
@@ -1162,7 +1173,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @Override
     public void caseNewExpr(NewExpr expr) {
       result = result.add(mgr.INITIALIZATION_ERRORS);
-      for (ValueBox box : expr.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = expr.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }
@@ -1224,7 +1236,8 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     @SuppressWarnings("rawtypes")
     @Override
     public void casePhiExpr(PhiExpr e) {
-      for (ValueBox box : e.getUseBoxes()) {
+      for (Iterator<ValueBox> iterator = e.getUseBoxesIterator(); iterator.hasNext();) {
+        ValueBox box = iterator.next();
         result = result.add(mightThrow(box.getValue()));
       }
     }

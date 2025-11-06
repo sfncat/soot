@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.android.tools.smali.dexlib2.analysis.ClassPath;
@@ -114,7 +115,6 @@ import soot.dexpler.tags.IntOrFloatOpTag;
 import soot.dexpler.tags.LongOpTag;
 import soot.dexpler.tags.LongOrDoubleOpTag;
 import soot.dexpler.tags.ShortOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AddExpr;
 import soot.jimple.AndExpr;
 import soot.jimple.ArrayRef;
@@ -122,26 +122,21 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
-import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
-import soot.jimple.EqExpr;
 import soot.jimple.FloatConstant;
 import soot.jimple.GotoStmt;
-import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.MulExpr;
-import soot.jimple.NeExpr;
 import soot.jimple.NegExpr;
 import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
-import soot.jimple.NumericConstant;
 import soot.jimple.OrExpr;
 import soot.jimple.RemExpr;
 import soot.jimple.ShlExpr;
@@ -545,6 +540,7 @@ public class DexBody {
     final UnknownType unknownType = UnknownType.v();
     final NullConstant nullConstant = NullConstant.v();
     final Options options = Options.v();
+    final PhaseOptions phaseOptions = PhaseOptions.v();
 
     /*
      * Timer t_whole_jimplification = new Timer(); Timer t_num = new Timer(); Timer t_null = new Timer();
@@ -552,20 +548,16 @@ public class DexBody {
      * t_whole_jimplification.start();
      */
 
-    JBOptions jbOptions = new JBOptions(PhaseOptions.v().getPhaseOptions("jb"));
+    JBOptions jbOptions = new JBOptions(phaseOptions.getPhaseOptions("jb"));
     jBody = (JimpleBody) b;
     deferredInstructions = new ArrayList<DeferableInstruction>();
     instructionsToRetype = new HashSet<RetypeableInstruction>();
 
     if (jbOptions.use_original_names()) {
-      PhaseOptions.v().setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
+      phaseOptions.setPhaseOptionIfUnset("jb.lns", "only-stack-locals");
     }
     if (jbOptions.stabilize_local_names()) {
-      PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
-    }
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      DalvikTyper.v().clear();
+      phaseOptions.setPhaseOption("jb.lns", "sort-locals:true");
     }
 
     // process method parameters and generate Jimple locals from Dalvik
@@ -581,9 +573,6 @@ public class DexBody {
       JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(thisLocal, jimple.newThisRef(declaringClassType));
       add(idStmt);
       paramLocals.add(thisLocal);
-      if (IDalvikTyper.ENABLE_DVKTYPER) {
-        DalvikTyper.v().setType(idStmt.getLeftOpBox(), jBody.getMethod().getDeclaringClass().getType(), false);
-      }
     }
     {
       int i = 0; // index of parameter type
@@ -620,9 +609,6 @@ public class DexBody {
         JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen, jimple.newParameterRef(t, i++));
         add(idStmt);
         paramLocals.add(gen);
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
-          DalvikTyper.v().setType(idStmt.getLeftOpBox(), t, false);
-        }
 
         // some parameters may be encoded on two registers.
         // in Jimple only the first Dalvik register name is used
@@ -775,52 +761,26 @@ public class DexBody {
     // }
     // }
 
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
+    // t_num.start();
+    DexNumTransformer.v().transform(jBody);
+    // t_num.end();
 
-      DexReturnValuePropagator.v().transform(jBody);
-      getCopyPopagator().transform(jBody);
-      DexNullThrowTransformer.v().transform(jBody);
-      DalvikTyper.v().typeUntypedConstrantInDiv(jBody);
-      DeadAssignmentEliminator.v().transform(jBody);
-      UnusedLocalEliminator.v().transform(jBody);
+    DexReturnValuePropagator.v().transform(jBody);
+    getCopyPopagator().transform(jBody);
 
-      DalvikTyper.v().assignType(jBody);
-      // jBody.validate();
-      jBody.validateUses();
-      jBody.validateValueBoxes();
-      // jBody.checkInit();
-      // Validate.validateArrays(jBody);
-      // jBody.checkTypes();
-      // jBody.checkLocals();
+    DexNullThrowTransformer.v().transform(jBody);
 
-    } else {
-      // t_num.start();
-      DexNumTransformer.v().transform(jBody);
-      // t_num.end();
+    // t_null.start();
+    DexNullTransformer.v().transform(jBody);
+    // t_null.end();
 
-      DexReturnValuePropagator.v().transform(jBody);
-      getCopyPopagator().transform(jBody);
+    DexIfTransformer.v().transform(jBody);
 
-      DexNullThrowTransformer.v().transform(jBody);
+    DeadAssignmentEliminator.v().transform(jBody);
+    UnusedLocalEliminator.v().transform(jBody);
 
-      // t_null.start();
-      DexNullTransformer.v().transform(jBody);
-      // t_null.end();
-
-      DexIfTransformer.v().transform(jBody);
-
-      DeadAssignmentEliminator.v().transform(jBody);
-      UnusedLocalEliminator.v().transform(jBody);
-
-      // DexRefsChecker.v().transform(jBody);
-      DexNullArrayRefTransformer.v().transform(jBody);
-    }
-
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      for (Local l : jBody.getLocals()) {
-        l.setType(unknownType);
-      }
-    }
+    // DexRefsChecker.v().transform(jBody);
+    DexNullArrayRefTransformer.v().transform(jBody);
 
     // Remove "instanceof" checks on the null constant
     DexNullInstanceofTransformer.v().transform(jBody);
@@ -838,9 +798,10 @@ public class DexBody {
     getLocalSplitter().transform(jBody);
 
     MultiMap<Local, Type> maybetypeConstraints = new HashMultiMap<>();
-    handleKnownDexTypes(b, jimple);
-    handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     Map<Local, Collection<Type>> definiteConstraints = new HashMap<>();
+    handleKnownDexTypes(b, jimple);
+    handleAgreegingTypes(b, definiteConstraints);
+    handleKnownDexArrayTypes(b, jimple, maybetypeConstraints);
     handleIncompatibleDexArrayTypes(b, maybetypeConstraints, definiteConstraints);
     for (Local l : b.getLocals()) {
       Type type = l.getType();
@@ -850,9 +811,11 @@ public class DexBody {
     }
 
     new soot.jimple.toolkits.typing.fast.TypeResolver(jBody) {
+      @Override
       protected soot.jimple.toolkits.typing.fast.TypePromotionUseVisitor createTypePromotionUseVisitor(JimpleBody jb,
           ITyping tg) {
         return new TypePromotionUseVisitor(jb, tg) {
+          @Override
           protected boolean allowConversion(Type ancestor, Type child) {
             if (ancestor == child) {
               return true;
@@ -868,6 +831,7 @@ public class DexBody {
             return super.allowConversion(ancestor, child);
           }
 
+          @Override
           public Type promote(Type tlow, Type thigh) {
             if (thigh instanceof BooleanType && tlow instanceof IntegerType) {
               // Well... in Android's dex code, 0 = false and everything else is true
@@ -888,7 +852,7 @@ public class DexBody {
 
       }
 
-
+      @Override
       protected Type getDefiniteType(Local v) {
         Collection<Type> r = definiteConstraints.get(v);
         if (r != null && r.size() == 1) {
@@ -900,8 +864,10 @@ public class DexBody {
         return null;
       }
 
+      @Override
       protected soot.jimple.toolkits.typing.fast.BytecodeHierarchy createBytecodeHierarchy() {
         return new soot.jimple.toolkits.typing.fast.BytecodeHierarchy() {
+          @Override
           public java.util.Collection<Type> lcas(Type a, Type b, boolean useWeakObjectType) {
             Collection<Type> s = super.lcas(a, b, useWeakObjectType);
             if (s.isEmpty()) {
@@ -952,11 +918,13 @@ public class DexBody {
         return res;
       }
 
+      @Override
       protected soot.jimple.toolkits.typing.fast.ITypingStrategy getTypingStrategy() {
         ITypingStrategy useTyping = DexBody.this.getTypingStrategy();
         return useTyping;
       }
 
+      @Override
       protected CastInsertionUseVisitor createCastInsertionUseVisitor(ITyping tg,
           soot.jimple.toolkits.typing.fast.IHierarchy h, boolean countOnly, int maxCasts) {
         return new CastInsertionUseVisitor(countOnly, jBody, tg, h, maxCasts) {
@@ -1053,93 +1021,6 @@ public class DexBody {
     DexArrayInitReducer.v().transform(jBody);
 
     final RefType objectType = RefType.v("java.lang.Object");
-    if (IDalvikTyper.ENABLE_DVKTYPER) {
-      for (Unit u : jBody.getUnits()) {
-        if (u instanceof IfStmt) {
-          ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-          if (((expr instanceof EqExpr) || (expr instanceof NeExpr))) {
-            Value op1 = expr.getOp1();
-            Value op2 = expr.getOp2();
-            if (op1 instanceof Constant && op2 instanceof Local) {
-              Local l = (Local) op2;
-              Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op1 instanceof IntConstant)) {
-                // null is
-                // IntConstant(0)
-                // in Dalvik
-                continue;
-              }
-              IntConstant icst = (IntConstant) op1;
-              int val = icst.value;
-              if (val != 0) {
-                continue;
-              }
-              expr.setOp1(nullConstant);
-            } else if (op1 instanceof Local && op2 instanceof Constant) {
-              Local l = (Local) op1;
-              Type ltype = l.getType();
-              if ((ltype instanceof PrimType) || !(op2 instanceof IntConstant)) {
-                // null is
-                // IntConstant(0)
-                // in Dalvik
-                continue;
-              }
-              IntConstant icst = (IntConstant) op2;
-              int val = icst.value;
-              if (val != 0) {
-                continue;
-              }
-              expr.setOp2(nullConstant);
-            } else if (op1 instanceof Local && op2 instanceof Local) {
-              // nothing to do
-            } else if (op1 instanceof Constant && op2 instanceof Constant) {
-
-              if (op1 instanceof NullConstant && op2 instanceof NumericConstant) {
-                IntConstant nc = (IntConstant) op2;
-                if (nc.value != 0) {
-                  throw new RuntimeException("expected value 0 for int constant. Got " + expr);
-                }
-                expr.setOp2(NullConstant.v());
-              } else if (op2 instanceof NullConstant && op1 instanceof NumericConstant) {
-                IntConstant nc = (IntConstant) op1;
-                if (nc.value != 0) {
-                  throw new RuntimeException("expected value 0 for int constant. Got " + expr);
-                }
-                expr.setOp1(nullConstant);
-              }
-            } else {
-              throw new RuntimeException("error: do not handle if: " + u);
-            }
-          }
-        }
-      }
-
-      // For null_type locals: replace their use by NullConstant()
-      List<ValueBox> uses = jBody.getUseBoxes();
-      // List<ValueBox> defs = jBody.getDefBoxes();
-      List<ValueBox> toNullConstantify = new ArrayList<ValueBox>();
-      List<Local> toRemove = new ArrayList<Local>();
-      for (Local l : jBody.getLocals()) {
-
-        if (l.getType() instanceof NullType) {
-          toRemove.add(l);
-          for (ValueBox vb : uses) {
-            Value v = vb.getValue();
-            if (v == l) {
-              toNullConstantify.add(vb);
-            }
-          }
-        }
-      }
-      for (ValueBox vb : toNullConstantify) {
-        System.out.println("replace valuebox '" + vb + " with null constant");
-        vb.setValue(nullConstant);
-      }
-      for (Local l : toRemove) {
-        System.out.println("removing null_type local " + l);
-        l.setType(objectType);
-      }
-    }
 
     // We pack locals that are not used in overlapping regions. This may
     // again lead to unused locals which we have to remove.
@@ -1148,8 +1029,8 @@ public class DexBody {
 
     // Some apps reference static fields as instance fields. We fix this
     // on the fly.
-    if (Options.v().wrong_staticness() == Options.wrong_staticness_fix
-        || Options.v().wrong_staticness() == Options.wrong_staticness_fixstrict) {
+    if (options.wrong_staticness() == Options.wrong_staticness_fix
+        || options.wrong_staticness() == Options.wrong_staticness_fixstrict) {
       FieldStaticnessCorrector.v().transform(jBody);
       MethodStaticnessCorrector.v().transform(jBody);
     }
@@ -1295,10 +1176,69 @@ public class DexBody {
     return jBody;
   }
 
+  /**
+   * We try to find locals where all definitions agree on the type already. Since this can cause more local types to be
+   * known, we do it until a fixed point is reached. This helps the type assigner in some cases massively
+   *
+   * @param b
+   *          the body
+   * @param definiteConstraints
+   *          the map containing definite constraints
+   */
+  private void handleAgreegingTypes(Body b, Map<Local, Collection<Type>> definiteConstraints) {
 
-/**
- * Handles cases where the array types are incompatible (any two different array types)
- */
+    BiFunction<Type, Type, Type> merge = new BiFunction<Type, Type, Type>() {
+
+      final BottomType bot = BottomType.v();
+
+      @Override
+      public Type apply(Type t, Type u) {
+        if (t instanceof UnknownType || u instanceof UnknownType) {
+          return bot;
+        }
+        if (t.equals(u)) {
+          return t;
+        }
+        return bot;
+      }
+
+    };
+
+    final UnitPatchingChain units = b.getUnits();
+    boolean changed = true;
+    while (changed == true) {
+      changed = false;
+      Map<Local, Type> type = new HashMap<>();
+      for (Unit u1 : units) {
+        if (u1 instanceof DefinitionStmt) {
+          DefinitionStmt assign = (DefinitionStmt) u1;
+          Value lop = assign.getLeftOp();
+          if (lop instanceof Local) {
+            Value rop = assign.getRightOp();
+            Type ropT = rop.getType();
+            if (!(rop instanceof NullConstant)) {
+              type.merge((Local) lop, ropT, merge);
+            }
+          }
+        }
+      }
+      for (Entry<Local, Type> e : type.entrySet()) {
+        Type etype = e.getValue();
+        if (!(etype instanceof BottomType) && !(etype instanceof UnknownType)) {
+          Local lcl = e.getKey();
+          if (lcl.getType() != etype) {
+            lcl.setType(etype);
+            changed = true;
+            definiteConstraints.put(lcl, Collections.singleton(etype));
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Handles cases where the array types are incompatible (any two different array types)
+   */
   private void handleIncompatibleDexArrayTypes(Body b, MultiMap<Local, Type> maybetypeConstraints,
       Map<Local, Collection<Type>> definiteConstraints) {
     boolean arrayConstraintsNecessary = false;
@@ -1612,6 +1552,7 @@ public class DexBody {
         }
       }
     }
+
   }
 
   /**

@@ -46,15 +46,18 @@ import soot.tagkit.Tag;
 
 public class ObjectOpTag implements Tag, DexplerTag {
 
+  public static final ObjectOpTag INSTANCE = new ObjectOpTag();
+
   public static final String NAME = "ObjectOpTag";
+
+  @Deprecated
+  public ObjectOpTag() {
+    super();
+  }
 
   @Override
   public String getName() {
     return NAME;
   }
 
-  @Override
-  public byte[] getValue() {
-    return new byte[1];
-  }
 }
