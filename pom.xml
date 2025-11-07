@@ -373,7 +373,6 @@
                 <configuration>
                     <propertyExpansion>config_loc=${checkstyle.dir.path}</propertyExpansion>
                     <configLocation>${checkstyle.file.path}</configLocation>
-                    <encoding>UTF-8</encoding>
                     <logViolationsToConsole>true</logViolationsToConsole>
                     <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
@@ -518,7 +517,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>2.0.16</version>
-            <scope>test</scope>
         </dependency>
         <!-- Testing dependencies -->
         <dependency>
@@ -639,39 +637,39 @@
             </activation>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>${maven-central-publishing-plugin.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <publishingServerId>central</publishingServerId>
-                            <waitUntil>published</waitUntil>
-                            <autoPublish>true</autoPublish>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>${maven-gpg-plugin.version}</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                                <configuration>
-                                    <!-- This is necessary for gpg to not try to use the pinentry programs -->
-                                    <gpgArguments>
-                                        <arg>--batch</arg>
-                                        <arg>--pinentry-mode</arg>
-                                        <arg>loopback</arg>
-                                    </gpgArguments>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
+<!--                    <plugin>-->
+<!--                        <groupId>org.sonatype.central</groupId>-->
+<!--                        <artifactId>central-publishing-maven-plugin</artifactId>-->
+<!--                        <version>${maven-central-publishing-plugin.version}</version>-->
+<!--                        <extensions>true</extensions>-->
+<!--                        <configuration>-->
+<!--                            <publishingServerId>central</publishingServerId>-->
+<!--                            <waitUntil>published</waitUntil>-->
+<!--                            <autoPublish>true</autoPublish>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                    <plugin>-->
+<!--                        <groupId>org.apache.maven.plugins</groupId>-->
+<!--                        <artifactId>maven-gpg-plugin</artifactId>-->
+<!--                        <version>${maven-gpg-plugin.version}</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <id>sign-artifacts</id>-->
+<!--                                <phase>verify</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>sign</goal>-->
+<!--                                </goals>-->
+<!--                                <configuration>-->
+<!--                                    &lt;!&ndash; This is necessary for gpg to not try to use the pinentry programs &ndash;&gt;-->
+<!--                                    <gpgArguments>-->
+<!--                                        <arg>&#45;&#45;batch</arg>-->
+<!--                                        <arg>&#45;&#45;pinentry-mode</arg>-->
+<!--                                        <arg>loopback</arg>-->
+<!--                                    </gpgArguments>-->
+<!--                                </configuration>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                    </plugin>-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
