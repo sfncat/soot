@@ -51,4 +51,11 @@ copy sootclasses-trunk-jar-with-dependencies.jar and pom.xml
 mvn install:install-file -Dfile="sootclasses-trunk-jar-with-dependencies.jar"  -DpomFile="pom.xml"
 
 ```
-
+## use soot
+```bazaar
+        <dependency>
+            <groupId>org.soot-oss</groupId>
+            <artifactId>soot</artifactId>
+            <version>4.7.0-SNAPSHOT</version>
+        </dependency>
+```
